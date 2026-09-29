@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NORA BELL | Fashion Store</title>
+<style>
+:root{--dark:#171717;--light:#faf8f5;--accent:#b58b63;--muted:#777}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--light);color:var(--dark);line-height:1.5}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #eee}
+.nav{max-width:1200px;margin:auto;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-size:25px;letter-spacing:4px;font-weight:700}
+.navlinks{display:flex;gap:25px}
+.navlinks a:hover{color:var(--accent)}
+.icons{display:flex;gap:12px;align-items:center}
+.iconbtn{border:0;background:none;font-size:18px}
+.cart-count{background:var(--dark);color:#fff;border-radius:50%;font-size:11px;padding:2px 6px;vertical-align:top}
+.hero{min-height:72vh;display:grid;place-items:center;text-align:center;padding:70px 20px;background:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1800&q=85") center/cover}
+.hero-content{color:#fff;max-width:750px}
+.hero h1{font-size:clamp(42px,7vw,82px);letter-spacing:7px;margin-bottom:12px}
+.hero p{font-size:19px;margin-bottom:28px}
+.btn{display:inline-block;border:0;background:var(--dark);color:#fff;padding:13px 25px;transition:.2s}
+.btn:hover{background:var(--accent)}
+.section{max-width:1200px;margin:auto;padding:70px 22px}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}
+.section h2{font-size:34px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.filter{background:#fff;border:1px solid #ddd;padding:9px 16px}
+.filter.active,.filter:hover{background:var(--dark);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:#fff;overflow:hidden;position:relative}
+.card img{width:100%;height:340px;object-fit:cover;display:block}
+.card-body{padding:16px}
+.card h3{font-size:17px;margin-bottom:5px}
+.price{font-weight:700;margin-bottom:13px}
+.card .btn{width:100%;padding:10px}
+.badge{position:absolute;top:12px;left:12px;background:#fff;padding:5px 9px;font-size:11px}
+.searchbox{display:none;padding:10px 22px;background:#fff;border-top:1px solid #eee}
+.searchbox input{width:100%;padding:12px;border:1px solid #ddd}
+.cart-panel{position:fixed;right:-420px;top:0;width:min(390px,100%);height:100%;background:#fff;z-index:40;box-shadow:-5px 0 20px #0002;padding:25px;transition:.3s;overflow:auto}
+.cart-panel.open{right:0}
+.cart-head{display:flex;justify-content:space-between;margin-bottom:20px}
+.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+.cart-item img{width:70px;height:80px;object-fit:cover}
+.cart-total{font-size:20px;font-weight:bold;margin:25px 0}
+.close{border:0;background:none;font-size:25px}
+.overlay{display:none;position:fixed;inset:0;background:#0006;z-index:30}
+.overlay.show{display:block}
+.about{background:#fff;text-align:center}
+footer{background:var(--dark);color:#fff;text-align:center;padding:35px 20px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.navlinks{display:none}.hero{min-height:65vh}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.card img{height:390px}.section{padding:50px 16px}.logo{font-size:20px}}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="#">NORA BELL</a>
+    <div class="navlinks">
+      <a href="#home">Home</a><a href="#shop">Shop</a><a href="#men">Men</a><a href="#women">Women</a><a href="#contact">Contact</a>
+    </div>
+    <div class="icons">
+      <button class="iconbtn" onclick="toggleSearch()">⌕</button>
+      <button class="iconbtn" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </nav>
+  <div class="searchbox" id="searchBox"><input id="searchInput" oninput="searchProducts()" placeholder="Search jeans, shirts, dresses..."></div>
+</header>
+
+<main id="home">
+<section class="hero">
+  <div class="hero-content">
+    <p>NEW SEASON 2026</p>
+    <h1>WEAR YOUR STYLE</h1>
+    <p>Modern fashion for men and women. Discover timeless pieces made for every day.</p>
+    <a class="btn" href="#shop">SHOP COLLECTION</a>
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="section-head"><h2>Featured Collection</h2><span id="resultText">8 products</span></div>
+  <div class="filters">
+    <button class="filter active" onclick="filterProducts('all',this)">All</button>
+    <button class="filter" onclick="filterProducts('men',this)">Men</button>
+    <button class="filter" onclick="filterProducts('women',this)">Women</button>
+  </div>
+  <div class="grid" id="productGrid"></div>
+</section>
+
+<section class="section about">
+  <h2>About NORA BELL</h2>
+  <p style="max-width:720px;margin:18px auto;color:var(--muted)">
+    NORA BELL is a modern fashion label bringing clean designs, everyday comfort and confident style together.
+    Explore our men's and women's collection and find your next favorite look.
+  </p>
+</section>
+</main>
+
+<footer id="contact">
+  <h3>NORA BELL</h3>
+  <p style="margin:8px 0 18px">Fashion for every story.</p>
+  <p>WhatsApp: +92 300 0000000 &nbsp; | &nbsp; Email: hello@norabell.com</p>
+  <p style="margin-top:18px;font-size:13px">© 2026 NORA BELL. All rights reserved.</p>
+</footer>
+
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<aside class="cart-panel" id="cartPanel">
+  <div class="cart-head"><h2>Your Cart</h2><button class="close" onclick="closeCart()">×</button></div>
+  <div id="cartItems"><p>Your cart is empty.</p></div>
+  <div class="cart-total" id="cartTotal">Total: Rs. 0</div>
+  <button class="btn" style="width:100%" onclick="checkout()">CHECKOUT</button>
+</aside>
+
+<script>
+const products=[
+{id:1,name:"Classic Blue Jeans",cat:"men",price:3499,img:"https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=800&q=80"},
+{id:2,name:"Premium White Shirt",cat:"men",price:2999,img:"https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=800&q=80"},
+{id:3,name:"Urban Black T-Shirt",cat:"men",price:1799,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80"},
+{id:4,name:"Classic Chino Pants",cat:"men",price:2799,img:"https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80"},
+{id:5,name:"Elegant Summer Dress",cat:"women",price:4499,img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80"},
+{id:6,name:"Women's Denim Jeans",cat:"women",price:3299,img:"https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80"},
+{id:7,name:"Minimalist Top",cat:"women",price:2399,img:"https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=800&q=80"},
+{id:8,name:"Wide Leg Trousers",cat:"women",price:2999,img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80"}
+];
+let cart=[];
+let currentFilter="all";
+
+function render(list=products){
+ const grid=document.getElementById("productGrid");
+ grid.innerHTML=list.map(p=>`
+ <article class="card">
+  <span class="badge">${p.cat==="men"?"MEN":"WOMEN"}</span>
+  <img src="${p.img}" alt="${p.name}" loading="lazy">
+  <div class="card-body"><h3>${p.name}</h3><div class="price">Rs. ${p.price.toLocaleString()}</div>
+  <button class="btn" onclick="addToCart(${p.id})">ADD TO CART</button></div>
+ </article>`).join("");
+ document.getElementById("resultText").textContent=list.length+" products";
+}
+function filterProducts(cat,btn){
+ currentFilter=cat;
+ document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+ const q=document.getElementById("searchInput").value.toLowerCase();
+ render(products.filter(p=>(cat==="all"||p.cat===cat)&&p.name.toLowerCase().includes(q)));
+}
+function searchProducts(){
+ const q=document.getElementById("searchInput").value.toLowerCase();
+ render(products.filter(p=>(currentFilter==="all"||p.cat===currentFilter)&&p.name.toLowerCase().includes(q)));
+}
+function toggleSearch(){const b=document.getElementById("searchBox");b.style.display=b.style.display==="block"?"none":"block";if(b.style.display==="block")document.getElementById("searchInput").focus();}
+function addToCart(id){cart.push(products.find(p=>p.id===id));updateCart();openCart();}
+function removeFromCart(i){cart.splice(i,1);updateCart();}
+function updateCart(){
+ document.getElementById("cartCount").textContent=cart.length;
+ const box=document.getElementById("cartItems");
+ if(!cart.length){box.innerHTML="<p>Your cart is empty.</p>";}
+ else box.innerHTML=cart.map((p,i)=>`<div class="cart-item"><img src="${p.img}"><div style="flex:1"><b>${p.name}</b><br>Rs. ${p.price.toLocaleString()}<br><button onclick="removeFromCart(${i})" style="border:0;background:none;padding:5px 0;text-decoration:underline">Remove</button></div></div>`).join("");
+ document.getElementById("cartTotal").textContent="Total: Rs. "+cart.reduce((s,p)=>s+p.price,0).toLocaleString();
+}
+function openCart(){document.getElementById("cartPanel").classList.add("open");document.getElementById("overlay").classList.add("show");}
+function closeCart(){document.getElementById("cartPanel").classList.remove("open");document.getElementById("overlay").classList.remove("show");}
+function checkout(){
+ if(!cart.length){alert("Your cart is empty.");return;}
+ alert("Checkout demo: connect your payment gateway or WhatsApp order system here.");
+}
+render();
+</script>
+</body>
+</html>
